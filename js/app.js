@@ -10,6 +10,7 @@
     var elementList;
     var elementInput;
     var filterButtons;
+    var toRender;
 
     /**
      * Starts the application
@@ -30,10 +31,10 @@
      * @param {String} desc
      * @return {Object} created todo
      */
-    function addTodo(desc) {
+    function addTodo(desc, i) {
         var todo = {
             description: desc,
-            id: Date.now(),
+            id: Date.now() + i,
             status: 1
         };
         TodoStore.add(todo);
@@ -48,6 +49,7 @@
         var todo = TodoStore.get(id);
         todo.status = todo.status === 0 ? 1 : 0;
         TodoStore.edit(id, todo);
+        return todo;
     }
 
     /**
@@ -77,8 +79,9 @@
      * Remove a todo from list
      * @param {Number} id
      */
-    function removeTodo(id) {
+    function removeTodo(id, target) {
         TodoStore.delete(id);
+        target.parentNode.parentNode.removeChild(target.parentNode);
     }
 
     /**
@@ -93,13 +96,44 @@
         if (l > 0) {
             for (var i = 0; i < l; i++) {
                 todo = list[i];
-                template += '<li class="item status' + todo.status + '"  ><span class="btnToggle active' + todo.status + '" ><i data-type="toggleTodo" data-id="' + todo.id + '"></i></span><div class="item-description-wrapper"><span class="item-description" data-type="editTodo" data-id="' + todo.id + '" id="desc' + todo.id + '">' + todo.description + '</span></div><button data-id="' + todo.id + '" type="button" data-type="button-remove" class="delete" name="button">✖</button></li>';
+                template += renderOne(todo);
             }
         } else {
-
             template += '<li class="empty">Hey, you have no items to be listed.</li>';
         }
         return template;
+    }
+
+    function renderOne(todo, noWrapper) {
+        var wrapperStart = '<li id="' + todo.id + '" class="item status' + todo.status + '"  >';
+        var wrapperEnd = '</li>';
+        var buff = '';
+
+        if (!noWrapper) {
+            buff += wrapperStart;
+        }
+
+        buff += '<span class="btnToggle active' + todo.status + '" ><i data-type="toggleTodo" data-id="' + todo.id + '"></i></span><div class="item-description-wrapper"><span class="item-description" data-type="editTodo" data-id="' + todo.id + '" id="desc' + todo.id + '">' + todo.description + '</span></div><button data-id="' + todo.id + '" type="button" data-type="button-remove" class="delete" name="button">✖</button>';
+
+        if (!noWrapper) {
+            buff += wrapperEnd;
+        }
+
+        return buff;
+    }
+
+    function update() {
+        toRender = filterActive ? filterBy(filterActive) : TodoStore.get();
+        print(elementList, toRender);
+    }
+
+
+    function updateOne(todo) {
+        var el = document.getElementById(todo.id);
+        el.classList.remove('status' + (todo.status === 1 ? 0 : 1));
+        el.classList.add('status' + todo.status);
+        el.innerHTML = renderOne(todo, true);
+        el = null;
     }
 
     function changeFilterClass(newElement) {
@@ -125,14 +159,8 @@
      * @param {Object} Target element (in this case, body element)
      */
     function eventDelegation(element) {
-        var toRender;
         var clickCount = 0;
         var singleClickTimer;
-
-        var update = function() {
-            toRender = filterActive ? filterBy(filterActive) : TodoStore.get();
-            print(elementList, toRender);
-        }
 
         var doubleClickTodo = function(target) {
             var id = target.getAttribute('data-id');
@@ -154,8 +182,7 @@
         var clickMethods = {
             'button-remove': function(target) {
                 var id = target.getAttribute('data-id');
-                removeTodo(+id);
-                update();
+                removeTodo(+id, target);
             },
             editTodo: function(target) {
                 clickCount++;
@@ -171,8 +198,12 @@
             },
             toggleTodo: function(target) {
                 var id = target.getAttribute('data-id');
-                toggleTodo(id);
-                update();
+                var todo = toggleTodo(id);
+                if (filterActive) {
+                    update();
+                } else {
+                    updateOne(todo);
+                }
             },
             'filterCompleted': function(target) {
                 var id = target.getAttribute('data-id');
@@ -219,7 +250,7 @@
                     todo.description = target.value;
                     todo.editMode = 0;
                     TodoStore.edit(id, todo);
-                    update();
+                    updateOne(todo);
                 }
             }
         }
