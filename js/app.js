@@ -4,7 +4,7 @@
     'use strict';
 
     var ENTER_KEY = 13;
-    var TodoStore = new Store('TodoList');
+    var TodoStore = new Store('TodoList-01');
     var filterActive = false;
     var elementBody;
     var elementList;
@@ -31,10 +31,10 @@
      * @param {String} desc
      * @return {Object} created todo
      */
-    function addTodo(desc, i) {
+    function addTodo(desc) {
         var todo = {
             description: desc,
-            id: Date.now() + i,
+            id: Date.now(),
             status: 1
         };
         TodoStore.add(todo);
@@ -109,14 +109,10 @@
         var wrapperEnd = '</li>';
         var buff = '';
 
-        if (!noWrapper) {
-            buff += wrapperStart;
-        }
-
         buff += '<span class="btnToggle active' + todo.status + '" ><i data-type="toggleTodo" data-id="' + todo.id + '"></i></span><div class="item-description-wrapper"><span class="item-description" data-type="editTodo" data-id="' + todo.id + '" id="desc' + todo.id + '">' + todo.description + '</span></div><button data-id="' + todo.id + '" type="button" data-type="button-remove" class="delete" name="button">✖</button>';
 
         if (!noWrapper) {
-            buff += wrapperEnd;
+            buff = wrapperStart + buff + wrapperEnd;
         }
 
         return buff;
@@ -126,7 +122,6 @@
         toRender = filterActive ? filterBy(filterActive) : TodoStore.get();
         print(elementList, toRender);
     }
-
 
     function updateOne(todo) {
         var el = document.getElementById(todo.id);
