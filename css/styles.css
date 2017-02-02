@@ -1,0 +1,158 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+input {
+    outline: none;
+    font-size: 20px;
+    padding: 1em;
+}
+
+button {
+    outline: none;
+    cursor: pointer;
+}
+
+body, html {
+    background: #40285e;
+    height: 100%;
+    font-size: 20px;
+    font-family: sans-serif;
+    color: #333;
+    padding: 2em;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 2em;
+    border-bottom: 1px solid #ccc;
+}
+
+header button {
+    border: none;
+    padding: .5em 1em;
+    margin: .2em;
+    background: #e3e3e3;
+    border-radius: 5px;
+    color: #999;
+    cursor: pointer;
+    transition: .3s;
+}
+
+header button:hover {
+    color: #222;
+}
+
+.empty {
+    text-align: center;
+    height: 5em;
+    line-height: 5em;
+}
+
+.filter.active {
+    background: #00bcd4;
+    color: #fff;
+}
+
+.app {
+    padding: 0 0 2em;
+    border-radius: 10px;
+    background: #f7f7f7;
+    box-shadow: 0 0 65px 1px rgba(0, 0, 0, 0.57);
+    width: 600px;
+    margin: auto;
+}
+
+#todo {
+    height: 3em;
+    border: 0;
+    width: 100%;
+    background: #40285e;
+    color: #ccc;
+}
+
+#todos {
+    min-height: 5em;
+}
+
+#todos .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #fefefe;
+    height: 3em;
+    transition: .3s;
+}
+
+#todos .item:hover {
+    background: #eee;
+}
+
+#todos .item input {
+    border: 0;
+    height: 3em;
+    width: 100%;
+    flex: 1;
+    border-bottom: 1px solid #00bcd4;
+    z-index: 10;
+    position: relative;
+}
+
+#todos .item .delete {
+    border: none;
+    background: none;
+    margin: 0 1em;
+    font-size: 26px;
+    color: #999;
+    display: none;
+}
+
+#todos .item .delete:hover {
+    color: #ff5722;
+}
+
+#todos .item:hover .delete {
+    display: block;
+}
+
+.btnToggle {
+    padding: 0 1em;
+    border-right: 1px solid #ccc;
+    height: 3em;
+    line-height: 3em;
+}
+
+.btnToggle i {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.btnToggle.active0 i {
+    background: #8bc34a;
+    border: 1px solid #7aae3d;
+}
+
+.item-description-wrapper {
+    flex: 1;
+}
+
+.item-description {
+    margin-left: 1em;
+    cursor: pointer;
+}
+
+.status0 .item-description {
+    text-decoration: line-through;
+    color: #ccc;
+}
+
+#todos li.status0 {}
